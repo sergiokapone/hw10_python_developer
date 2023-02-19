@@ -210,13 +210,15 @@ def add_contact(*args):
     """Функція додає новый контакт в адресну книгу."""
 
     if not args[0]:
-        raise ValueError("Имя не должно быть пустым")
+        raise ValueError("Ім'я не має бути порожнім")
 
     name = Name(args[0])
     phone = Phone(args[1])
 
     if phone.validate() is False:
-        raise ValueError("Телефонный номер должен быть десятизначным числом")
+        raise ValueError("Телефонний номер має бути десятизначним числом")
+        
+    
 
     user = Record(name)
     user.add_phone(phone)
