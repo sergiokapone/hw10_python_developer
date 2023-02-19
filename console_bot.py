@@ -87,11 +87,14 @@ class Record:
         return False
 
     def remove_phone(self, *phones):
+        """Видаляє телефони з запису."""
         for phone in phones:
             if phone in self.phones:
                 self.phones.remove(phone)
 
     def edit_record(self, name=None, phones=None):
+        """Редагує запис."""
+
         if name:
             self.name.value = name
         if phones:
@@ -108,6 +111,8 @@ class AddressBook(UserDict):
         self.data = {}
 
     def search_by_name(self, name):
+        """Шукає номери контакту."""
+
         return self.data[name]
 
     def add_record(self, record):
