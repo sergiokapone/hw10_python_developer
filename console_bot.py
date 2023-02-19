@@ -67,7 +67,6 @@ class Record:
             return
         self.name = name
         self.phones = []
-        # self.records[name.value] = self
 
     def add_phone(self, *phones: list[Phone]):
         """Додає номери телефонів до списку записів."""
@@ -205,21 +204,28 @@ def clear_number(*args):
     return f"Phone '{phone}' was removed."
 
 
-@input_error
+# @input_error
 def add_contact(*args):
     """Функція додає новый контакт в адресну книгу."""
+
     if not args[0]:
-        raise ValueError
+        raise ValueError("Имя не должно быть пустым")
+
     name = Name(args[0])
-    print(args[0])
     phone = Phone(args[1])
 
     if phone.validate() is False:
-        raise ValueError("Телефонный номер має бути десятизначним числом")
+        raise ValueError("Телефонный номер должен быть десятизначным числом")
+        
+    # print(phone.value, contacts.search_by_name(name.value))        
+
+    # if phone.value in contacts.search_by_name(name.value):
+    #     return f"Phone {args[1]} already in contacts"
 
     user = Record(name)
     user.add_phone(phone)
     contacts.add_record(user)
+
     return f"Contact '{name}' added to the address book."
 
 
