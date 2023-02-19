@@ -19,7 +19,7 @@ class Field:
     """Клас є батьківським для всіх полів, у ньому реалізується логіка,
     загальна для всіх полів."""
 
-    def __init__(self, value):
+    def __init__(self, value: str):
         self.value = value
 
     def __eq__(self, other):
@@ -51,32 +51,32 @@ class Record:
     records = {}
 
     # Забороняємо створювати кілька об'єктів з однаковиси полями Name
-    def __new__(cls, name):
+    def __new__(cls, name: Name):
         if name.value in cls.records:
             return cls.records[name.value]
         return super().__new__(cls)
 
     @classmethod
-    def is_exist(cls, name):
+    def is_exist(cls, name: Name) -> bool:
         if name.value in cls.records:
             return True
         return False
 
-    def __init__(self, name):
+    def __init__(self, name: Name):
         if name.value in self.records:
             return
         self.name = name
         self.phones = []
-        self.records[name.value] = self
+        # self.records[name.value] = self
 
-    def add_phone(self, *phones):
+    def add_phone(self, *phones: list[Phone]):
         """Додає номери телефонів до списку записів."""
 
         for phone in phones:
             if phone not in self.phones:
                 self.phones.append(phone)
 
-    def update_phone(self, old_phone, new_phone):
+    def update_phone(self, old_phone: str, new_phone: str) -> bool:
         """Змінює номер телефону у записі зі старим номером old_number
         на новий номер new_number."""
 
@@ -86,13 +86,13 @@ class Record:
                 return True
         return False
 
-    def remove_phone(self, *phones):
+    def remove_phone(self, *phones: Phone):
         """Видаляє телефони з запису."""
         for phone in phones:
             if phone in self.phones:
                 self.phones.remove(phone)
 
-    def edit_record(self, name=None, phones=None):
+    def edit_record(self, name: Name = None, phones: list[Phone] = None):
         """Редагує запис."""
 
         if name:
@@ -110,24 +110,24 @@ class AddressBook(UserDict):
     def __init__(self):
         self.data = {}
 
-    def search_by_name(self, name):
+    def search_by_name(self, name: str) -> list[Phone]:
         """Шукає номери контакту."""
 
         return self.data[name]
 
-    def add_record(self, record):
+    def add_record(self, record: Record):
         """Додає запис до списку контактів."""
 
-        name = record.name.value
+        name = record.name.value  # name: str
         if name in self.data:
             self.data[name].add_phone(*record.phones)
         else:
             self.data[name] = record
 
-    def remove_record(self, record):
+    def remove_record(self, record: Record):
         """Видаляє запис зі списку контактів."""
 
-        name = record.name.value
+        name = record.name.value  # name: str
         if name in self.data:
             del self.data[name]
 
@@ -208,8 +208,10 @@ def clear_number(*args):
 @input_error
 def add_contact(*args):
     """Функція додає новый контакт в адресну книгу."""
-
+    if not args[0]:
+        raise ValueError
     name = Name(args[0])
+    print(args[0])
     phone = Phone(args[1])
 
     if phone.validate() is False:
