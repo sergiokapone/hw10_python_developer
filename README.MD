@@ -8,6 +8,7 @@
 - <Record> реалізує методи додавання/видалення/редагування об'єктів <Phone>.
 - <AddressBook> реалізує метод <add_record>, який додає <Record> у <self.data>.
 
+```
     COMMANDS = {
         "hello": hello,
         "add": add_contact,
@@ -20,3 +21,4 @@
         "close": good_bye,
         "exit": good_bye,
     }
+```
