@@ -1,6 +1,6 @@
 console_bot-prev.py
 _minted-code/
 *.aux
-*.tar.gz
+*.gz
 *.log
 *.out
