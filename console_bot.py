@@ -22,8 +22,8 @@ class Field:
     def __init__(self, value: str):
         self.value = value
 
-    def __repr__(self):
-        return f"{self.value}"
+    # def __repr__(self):
+    #     return f"{self.value}"
 
 
 class Name(Field):
@@ -36,9 +36,7 @@ class Phone(Field):
     """Клас -- необов'язкове поле з телефоном та таких один записів (Record)
     може містити кілька."""
 
-    def validate(self):
-        if len(str(self.value)) != 10:
-            return False
+    pass
 
 
 class Record:
@@ -48,106 +46,63 @@ class Record:
     records = {}
 
     # Забороняємо створювати кілька об'єктів з однаковиси полями Name
-    def __new__(cls, name: Name):
+    def __new__(cls, name: Name, *args, **kwargs):
         if name.value in cls.records:
             return cls.records[name.value]
         return super().__new__(cls)
 
-    @classmethod
-    def is_exist(cls, name: Name) -> bool:
-        if name.value in cls.records:
-            return True
-        return False
-
-    def __init__(self, name: Name):
+    def __init__(self, name: Name, *phones: Phone):
+        # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
             return
-        self.name = name
-        self.phones = []
+        self.name = name  # Name
+        self.phones = []  # list[str]
+        self.phones.extend([phone.value for phone in phones])
+        # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
-    def add_phone(self, *phones: list[Phone]):
-        """Додає номери телефонів до списку записів."""
+    def add_phone(self, phone: Phone):
+        self.phones.append(phone.value)
 
-        for phone in phones:
-            if phone not in self.phones:
-                self.phones.append(phone)
+    def remove_phone(self, phone: Phone):
+        self.phones.remove(phone.value)
 
-    def update_phone(self, old_phone: str, new_phone: str) -> bool:
-        """Змінює номер телефону у записі зі старим номером old_number
-        на новий номер new_number."""
-
-        for phone in self.phones:
-            if phone.value == old_phone.value:
-                phone.value = new_phone.value
-                return True
+    def change_phone(self, old_phone: Phone, new_phone: Phone) -> bool:
+        if old_phone.value in self.phones:
+            idx = self.phones.index(old_phone.value)
+            self.phones[idx] = new_phone.value
+            return True
         return False
-
-    def remove_phone(self, *phones: Phone):
-        """Видаляє телефони з запису."""
-        for phone in phones:
-            if phone in self.phones:
-                self.phones.remove(phone)
-
-    def edit_record(self, name: Name = None, phones: list[Phone] = None):
-        """Редагує запис."""
-
-        if name:
-            self.name.value = name
-        if phones:
-            self.phones = phones
-
-    def get_phones(self):
-        return list(self.phones)
-
-    def __str__(self):
-        return f"{self.name.value}: {', '.join(map(str, self.phones))}"
 
 
 class AddressBook(UserDict):
     """Клас містить логіку пошуку за записами до цього класу."""
 
-    def __init__(self):
-        self.data = {}
-
-    def search_by_name(self, name: str) -> list[Phone]:
-        """Шукає номери контакту."""
-        return self.data.get(name, [])
-
     def add_record(self, record: Record):
         """Додає запис до списку контактів."""
 
-        name = record.name.value  # name: str
-        if name in self.data:
-            self.data[name].add_phone(*record.phones)
-        else:
-            self.data[name] = record
-
-    def remove_record(self, record: Record):
-        """Видаляє запис зі списку контактів."""
-
-        name = record.name.value  # name: str
-        if name in self.data:
-            del self.data[name]
+        self.data[record.name.value] = record.phones
 
     def __str__(self):
-        result = []
-        for record in self.data.values():
-            result.append(str(record))
-        return "\n".join(result)
+        items = [
+            f"{k}: {', '.join(str(i) for i in v)}" for k, v in self.items()
+        ]
+        if items:
+            return "\n".join(items)
+        return "Empty"
 
 
 # ================================= Decorator ================================#
 
 
-def input_error(func, *args, **kwargs):
-    def wrapper(*args, **kwargs):
+def input_error(func):
+    def wrapper(*func_args, **func_kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(*func_args, **func_kwargs)
         except KeyError:
-            return f"<{args[0]}> does not appear in list"
+            return f"Give me a name, please"
         except ValueError:
-            return "Give me a name and phone, please"
+            return "Give me a phone, please"
 
     return wrapper
 
@@ -167,80 +122,85 @@ def undefined(*args):
     return "What do you mean?"
 
 
-@input_error
-def remove_contact(*args):
-    name = Name(args[0])
-    if Record.is_exist(name):
-        contacts.remove_record(Record(name))
-        return f"Contact {name} was removed"
-    raise KeyError
-
-
 def show_all(*args):
-    if contacts.data:
-        return contacts
-    return "Contact list is empty"
-
-
-def get_phone(*args):
-    name = Name(args[0])
-    if Record.is_exist(name):
-        return contacts.search_by_name(args[0])
-    return f"Contact {name} not found in the list"
+    return contacts
 
 
 @input_error
-def clear_number(*args):
-    """Функція видаляє контакт з книги."""
-
-    name = Name(args[0])
-    phone = Phone(args[1])
-
-    if phone.validate() is False:
-        raise ValueError("Телефонный номер має бути десятизначним числом")
-
-    user = Record(name)
-    user.remove_phone(phone)
-    return f"Phone '{phone}' was removed."
-
-
-# @input_error
 def add_contact(*args):
-    """Функція додає новый контакт в адресну книгу."""
 
     if not args[0]:
-        raise ValueError("Ім'я не має бути порожнім")
+        raise KeyError
+
+    if not args[1]:
+        raise ValueError
 
     name = Name(args[0])
     phone = Phone(args[1])
+    record = Record(name)
+    record.add_phone(phone)
+    contacts.add_record(record)
 
-    if phone.validate() is False:
-        raise ValueError("Телефонний номер має бути десятизначним числом")
+    return f"I added a nomber {args[1]} to contact {args[0]}"
 
-    if phone.value in Record(name).get_phones():
-        return f"Number {args[1]} already in contact list"
 
-    user = Record(name)
-    user.add_phone(phone)
-    contacts.add_record(user)
+@input_error
+def get_phones(*args):
 
-    return f"Contact '{name}' added to the address book."
+    if not args[0]:
+        raise KeyError
+
+    name = Name(args[0])
+
+    phones = Record(name).phones
+
+    if phones:
+        return f"{name.value}: " + ", ".join(
+            f"{element}" for element in phones
+        )
+
+
+@input_error
+def remove_contact(*args):
+
+    if not args[0]:
+        raise KeyError
+
+    name = Name(args[0])
+
+    del contacts[name.value]
+
+    return f"Contact {name.value} was removed"
 
 
 @input_error
 def change_contact(*args):
-    if args[0] and args[1] and args[2]:
-        name = Name(args[0])
-        if Record.is_exist(name):
-            phone1 = Phone(args[1])
-            phone2 = Phone(args[2])
-            user = Record(name)
-            user.update_phone(phone1, phone2)
-            return f"I changed contact for {name}"
-        else:
-            return f"{name} is not in list"
-    else:
-        raise ValueError
+
+    if not args[0]:
+        raise KeyError
+
+    if not args[1]:
+        raise ValueError("Old phone number is required")
+
+    if not args[2]:
+        raise ValueError("New phone number is required")
+
+    name = Name(args[0])
+    old_phone = Phone(args[1])
+    new_phone = Phone(args[2])
+
+    if name.value not in contacts.keys():
+        return f"Contact {name.value} not found"
+
+    contact_list = contacts[name.value]
+    for number in contact_list:
+        if number == old_phone.value:
+            idx = contact_list.index(number)
+            contact_list[idx] = new_phone.value
+            break
+        return f"Phone {old_phone.value} not found for {name.value}"
+
+    return f"Contact {name.value} with phone number {old_phone.value} was updated with new phone number {new_phone.value}"
 
 
 # =============================== handler loader =============================#
@@ -251,9 +211,8 @@ def get_handler(*args):
         "hello": hello,
         "add": add_contact,
         "change": change_contact,
-        "phone": get_phone,
+        "phones": get_phones,
         "show all": show_all,
-        "clear number": clear_number,
         "remove": remove_contact,
         "good bye": good_bye,
         "close": good_bye,
@@ -268,7 +227,7 @@ def get_handler(*args):
 def main():
 
     pattern = re.compile(
-        r"\b(\.|hello|add|remove|clear number|change|phone|show all|good bye|close|exit)\b"
+        r"\b(\.|hello|add|remove|clear number|change|phones|show all|good bye|close|exit)\b"
         r"(?:\s+([a-zA-Z]+))?"
         r"(?:\s+(\d{10}))?"
         r"(?:\s+(\d{10})?)?",
@@ -313,12 +272,4 @@ contacts = AddressBook()  # Global variable for storing contacts
 
 if __name__ == "__main__":
 
-    name = Name("Sergiy")
-
-    # Sergiy = Record(name)
-    # Sergiy.add_phone(Phone("0123456789"))
-    # Sergiy.add_phone(Phone("1111111111"))
-    # contacts.add_record(Sergiy)
-    # print(Record(name).get_phones())
-    # # print(contacts)
     main()

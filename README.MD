@@ -15,7 +15,6 @@
 - `chage` --- чат змінює номер для відповідного контакту, приклад `change Sergiy 0936564532 0634564545`.
 - `phone` --- чат виводить номери телефонів контакту, приклад `phone Sergiy`.
 - `show all`--- чат показує усі контакти та їх номери, приклад `show all`
-- `clear number` --- чат видаляє номер певного контакту, наприклад `clear number Sergiy 0936564532`.
 - `remove` --- чат видаляє запис з вказаним іменем, приклад `remove Sergiy`.
 - `good bye`, `good`, `exit` --- чат прощається і завершує роботу.
 - `.` --- чат перериває свою роботу без попереджень.
@@ -26,9 +25,8 @@
         "hello": hello,
         "add": add_contact,
         "change": change_contact,
-        "phone": get_phone,
+        "phones": get_phones,
         "show all": show_all,
-        "clear number": clear_number,
         "remove": remove_contact,
         "good bye": good_bye,
         "close": good_bye,
