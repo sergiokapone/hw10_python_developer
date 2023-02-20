@@ -189,7 +189,7 @@ def change_contact(*args):
     old_phone = Phone(args[1])
     new_phone = Phone(args[2])
 
-    if name.value not in contacts.keys():
+    if name.value not in contacts:
         return f"Contact {name.value} not found"
 
     contact_list = contacts[name.value]
