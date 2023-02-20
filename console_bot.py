@@ -112,8 +112,7 @@ class AddressBook(UserDict):
 
     def search_by_name(self, name: str) -> list[Phone]:
         """Шукає номери контакту."""
-
-        return self.data[name]
+        return self.data.get(name, [])
 
     def add_record(self, record: Record):
         """Додає запис до списку контактів."""
@@ -205,7 +204,7 @@ def clear_number(*args):
     return f"Phone '{phone}' was removed."
 
 
-@input_error
+# @input_error
 def add_contact(*args):
     """Функція додає новый контакт в адресну книгу."""
 
@@ -217,8 +216,9 @@ def add_contact(*args):
 
     if phone.validate() is False:
         raise ValueError("Телефонний номер має бути десятизначним числом")
-        
-    
+
+    # if phone.value in Record(name).phones:
+    #     return f"Number {args[1]} already in contact list"
 
     user = Record(name)
     user.add_phone(phone)
