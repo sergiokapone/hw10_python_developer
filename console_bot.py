@@ -100,6 +100,9 @@ class Record:
         if phones:
             self.phones = phones
 
+    def get_phones(self):
+        return list(self.phones)
+
     def __str__(self):
         return f"{self.name.value}: {', '.join(map(str, self.phones))}"
 
@@ -217,8 +220,8 @@ def add_contact(*args):
     if phone.validate() is False:
         raise ValueError("Телефонний номер має бути десятизначним числом")
 
-    # if phone.value in Record(name).phones:
-    #     return f"Number {args[1]} already in contact list"
+    if phone.value in Record(name).get_phones():
+        return f"Number {args[1]} already in contact list"
 
     user = Record(name)
     user.add_phone(phone)
@@ -313,4 +316,12 @@ contacts = AddressBook()  # Global variable for storing contacts
 
 if __name__ == "__main__":
 
+    name = Name("Sergiy")
+
+    # Sergiy = Record(name)
+    # Sergiy.add_phone(Phone("0123456789"))
+    # Sergiy.add_phone(Phone("1111111111"))
+    # contacts.add_record(Sergiy)
+    # print(Record(name).get_phones())
+    # # print(contacts)
     main()
