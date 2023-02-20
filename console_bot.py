@@ -100,7 +100,7 @@ def input_error(func):
         try:
             return func(*func_args, **func_kwargs)
         except KeyError:
-            return f"Give me a name, please"
+            return "Give me a name, please"
         except ValueError:
             return "Give me a phone, please"
 
