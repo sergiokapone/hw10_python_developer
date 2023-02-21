@@ -314,6 +314,7 @@ contacts = AddressBook()  # Global variable for storing contacts
 rec1 = Record(Name('UserA'), [Phone('1111111111'), Phone('2222222222')])
 rec2 = Record(Name('UserB'), [Phone('3333333333'), Phone('5555555555')])
 rec3 = Record(Name('UserC'))
+rec4 = Record(Name('UserD'), [Phone('1212121212'), Phone('3434343434')])
 contacts.add_record(rec1)
 contacts.add_record(rec2)
 contacts.add_record(rec3)
