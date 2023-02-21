@@ -206,7 +206,7 @@ def load(*args):
 
 
 @input_error
-def add_contact(*args):
+def add(*args):
     """Функція-handler додає телефон до контакту."""
 
     if not args[0]:
@@ -225,7 +225,7 @@ def add_contact(*args):
 
 
 @input_error
-def get_phones(*args):
+def phones(*args):
     """Функція-handler показує телефонні номери відповідного контакту."""
 
     if not args[0]:
@@ -242,7 +242,7 @@ def get_phones(*args):
 
 
 @input_error
-def remove_contact(*args):
+def remove(*args):
     """Функція-handler видаляє запис з книги."""
 
     if not args[0]:
@@ -256,7 +256,7 @@ def remove_contact(*args):
 
 
 @input_error
-def change_contact(*args):
+def change(*args):
     """Функція-handler змінює телефон контакту."""
 
     if not args[0]:
@@ -290,11 +290,11 @@ def change_contact(*args):
 
 COMMANDS = {
     "hello": hello,
-    "add": add_contact,
-    "change": change_contact,
-    "phones": get_phones,
+    "add": add,
+    "change": change,
+    "phones": phones,
     "show all": show_all,
-    "remove": remove_contact,
+    "remove": remove,
     "good bye": good_bye,
     "close": good_bye,
     "exit": good_bye,
