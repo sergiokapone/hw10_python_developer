@@ -42,6 +42,12 @@ class Phone(Field):
     pass
 
 
+class Birthday(Field):
+    """Клас -- необов'язкове поле з датою народження."""
+
+    pass
+
+
 class Record:
     """Клас відповідає за логіку додавання/видалення/редагування
     необов'язкових полів та зберігання обов'язкового поля Name."""
@@ -54,7 +60,12 @@ class Record:
             return cls.records[name.value]
         return super().__new__(cls)
 
-    def __init__(self, name: Name, phones: list[Phone] = None):
+    def __init__(
+        self,
+        name: Name,
+        phones: list[Phone] = None,
+        birthday: Birthday = None,
+    ):
 
         # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
@@ -62,6 +73,7 @@ class Record:
         # інакше запустити конструктор
         self.name = name  # Name --- атрибут ля зберігання об'єкту Name
         self.phones = phones or []
+        self.birthday = birthday
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
@@ -84,6 +96,9 @@ class Record:
             self.phones[idx] = new_phone
             return True
         return False
+
+    def __iter__(self):
+        return iter(self.phones)
 
     def __str__(self):
         return ", ".join([phone.value for phone in self.phones])
@@ -293,6 +308,17 @@ def main():
 
 
 contacts = AddressBook()  # Global variable for storing contacts
+
+# ================================ Для теста ==================================
+
+rec1 = Record(Name('UserA'), [Phone('1111111111'), Phone('2222222222')])
+rec2 = Record(Name('UserB'), [Phone('3333333333'), Phone('5555555555')])
+rec3 = Record(Name('UserC'))
+contacts.add_record(rec1)
+contacts.add_record(rec2)
+contacts.add_record(rec3)
+
+# =============================================================================
 
 
 # ================================ main programm =============================#
