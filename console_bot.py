@@ -142,7 +142,7 @@ class AddressBook(UserDict):
     def __str__(self):
         """метод який представляє дінні у вигляді name: phone, phone, ..."""
 
-        header = f"| {'Name':<10}| {'Phones':^50} |"
+        header = f"| {'Name':<10}| {'Phones':<50} |"
         # Создаем строку разделителя таблицы
         separator = 50 * "-" + "\n"
         items = [
@@ -151,15 +151,7 @@ class AddressBook(UserDict):
         ]
 
         if items:
-            return (
-                "|"
-                + separator
-                + header
-                + separator
-                + "\n".join(items)
-                + "|"
-                + separator
-            )
+            return "|" + separator + header + separator + "\n".join(items) + "|" + separator
         return "Book is empty"
 
 
