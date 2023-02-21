@@ -283,23 +283,23 @@ def change_contact(*args):
 
 # =============================== handler loader =============================#
 
+COMMANDS = {
+    "hello": hello,
+    "add": add_contact,
+    "change": change_contact,
+    "phones": get_phones,
+    "show all": show_all,
+    "remove": remove_contact,
+    "good bye": good_bye,
+    "close": good_bye,
+    "exit": good_bye,
+    "save": save,
+    "load": load,
+}
+
 
 def get_handler(*args):
     """Функція викликає відповідний handler."""
-
-    COMMANDS = {
-        "hello": hello,
-        "add": add_contact,
-        "change": change_contact,
-        "phones": get_phones,
-        "show all": show_all,
-        "remove": remove_contact,
-        "good bye": good_bye,
-        "close": good_bye,
-        "exit": good_bye,
-        "save": save,
-        "load": load,
-    }
     return COMMANDS.get(args[0], undefined)
 
 
@@ -308,8 +308,9 @@ def get_handler(*args):
 
 def main():
 
+    command_pattern = "|".join(COMMANDS.keys())
     pattern = re.compile(
-        r"\b(\.|hello|add|save|load|remove|change|phones|show all|good bye|close|exit)\b"
+        r"\b(\.|" + command_pattern + r")\b"
         r"(?:\s+([a-zA-Z]+))?"
         r"(?:\s+(\d{10}))?"
         r"(?:\s+(\d{10})?)?",
