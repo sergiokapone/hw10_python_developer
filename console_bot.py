@@ -233,7 +233,6 @@ def change_contact(*args):
 
     contact_list = contacts[name.value].phones
     for number in contact_list:
-        print(number == old_phone)
         if number == old_phone:
             idx = contact_list.index(number)
             contact_list[idx] = new_phone
