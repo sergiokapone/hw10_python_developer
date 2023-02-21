@@ -21,7 +21,15 @@ class Field:
     загальна для всіх полів."""
 
     def __init__(self, value: str):
-        self.value = value
+        self.__value = value
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value):
+        self.__value = value
 
     def __repr__(self):
         return f"{self.value}"
@@ -98,6 +106,10 @@ class Record:
             return True
         return False
 
+    def days_to_birthday(self, name):
+        """Метод повертає кількість днів до наступного дня народження контакту."""
+        pass
+
     def __iter__(self):
         return iter(self.phones)
 
@@ -151,7 +163,15 @@ class AddressBook(UserDict):
         ]
 
         if items:
-            return "|" + separator + header + separator + "\n".join(items) + "|" + separator
+            return (
+                "|"
+                + separator
+                + header
+                + separator
+                + "\n".join(items)
+                + "|"
+                + separator
+            )
         return "Book is empty"
 
 
