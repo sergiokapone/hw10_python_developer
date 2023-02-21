@@ -61,7 +61,7 @@ class Record:
             return
         # інакше запустити конструктор
         self.name = name  # Name --- атрибут ля зберігання об'єкту Name
-        self.phone_numbers = phones or []
+        self.phones = phones or []
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
