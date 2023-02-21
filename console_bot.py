@@ -54,14 +54,14 @@ class Record:
             return cls.records[name.value]
         return super().__new__(cls)
 
-    def __init__(self, name: Name):
+    def __init__(self, name: Name, phones=None):
 
         # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
             return
         # інакше запустити конструктор
         self.name = name  # Name --- атрибут ля зберігання об'єкту Name
-        self.phones = []
+        self.phone_numbers = phones or []
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
