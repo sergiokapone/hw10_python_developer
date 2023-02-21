@@ -1,5 +1,6 @@
 import re
 from collections import UserDict
+import json
 
 # ================================== Classes =================================#
 
@@ -73,7 +74,7 @@ class Record:
         # інакше запустити конструктор
         self.name = name  # Name --- атрибут ля зберігання об'єкту Name
         self.phones = phones or []
-        self.birthday = birthday or Birthday('')
+        self.birthday = birthday or Birthday("")
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
@@ -111,6 +112,32 @@ class AddressBook(UserDict):
         """Метод додає запис до списку контактів."""
 
         self.data[record.name.value] = record
+
+    def save_contacts(self, filename):
+        with open(f"{filename}.json", "w") as f:
+            json.dump(
+                {
+                    name: {
+                        "phones": [phone.value for phone in record.phones],
+                        "birthday": record.birthday.value,
+                    }
+                    for name, record in self.data.items()
+                },
+                f,
+                ensure_ascii=False,
+                indent=4,
+            )
+
+    def load_contacts(self, filename):
+        with open(f"{filename}.json", "r") as f:
+            data = json.load(f)
+
+        for name, info in data.items():
+            phones = [Phone(phone) for phone in info["phones"]]
+            birthday = Birthday(info["birthday"])
+            self.data[name] = Record(
+                name=Name(name), phones=phones, birthday=birthday
+            )
 
     def __str__(self):
         """метод який представляє дінні у вигляді name: phone, phone, ..."""
@@ -159,6 +186,18 @@ def show_all(*args):
     """Функція-handler показує книгу контактів."""
 
     return contacts
+
+
+@input_error
+def save(*args):
+    contacts.save_contacts(args[0])
+    return f"File {args[0]} saved"
+
+
+@input_error
+def load(*args):
+    contacts.load_contacts(args[0])
+    return f"File {args[0]} loaded"
 
 
 @input_error
@@ -258,6 +297,8 @@ def get_handler(*args):
         "good bye": good_bye,
         "close": good_bye,
         "exit": good_bye,
+        "save": save,
+        "load": load,
     }
     return COMMANDS.get(args[0], undefined)
 
@@ -268,7 +309,7 @@ def get_handler(*args):
 def main():
 
     pattern = re.compile(
-        r"\b(\.|hello|add|remove|clear number|change|phones|show all|good bye|close|exit)\b"
+        r"\b(\.|hello|add|save|load|remove|change|phones|show all|good bye|close|exit)\b"
         r"(?:\s+([a-zA-Z]+))?"
         r"(?:\s+(\d{10}))?"
         r"(?:\s+(\d{10})?)?",
@@ -308,20 +349,20 @@ def main():
 
 contacts = AddressBook()  # Global variable for storing contacts
 
-# ================================ Для теста ==================================
+# ================================ Для теста ================================ #
 
-rec1 = Record(Name('UserA'), [Phone('1111111111'), Phone('2222222222')])
-rec2 = Record(Name('UserB'), [Phone('3333333333'), Phone('5555555555')])
-rec3 = Record(Name('UserC'))
-rec4 = Record(Name('UserD'), [Phone('1212121212'), Phone('3434343434')])
+rec1 = Record(Name("UserA"), [Phone("1111111111"), Phone("2222222222")])
+rec2 = Record(Name("UserB"), [Phone("3333333333"), Phone("5555555555")])
+rec3 = Record(Name("UserC"))
+rec4 = Record(Name("UserD"), [Phone("1212121212"), Phone("3434343434")])
 contacts.add_record(rec1)
 contacts.add_record(rec2)
 contacts.add_record(rec3)
 
-# =============================================================================
+# =========================================================================== #
 
 
-# ================================ main programm =============================#
+# ================================ main programm ============================ #
 
 if __name__ == "__main__":
 

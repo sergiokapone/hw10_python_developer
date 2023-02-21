@@ -1,0 +1,26 @@
+{
+    "UserB": {
+        "phones": [
+            "3333333333",
+            "5555555555"
+        ],
+        "birthday": ""
+    },
+    "UserA": {
+        "phones": [
+            "1111111111",
+            "2222222222"
+        ],
+        "birthday": ""
+    },
+    "UserC": {
+        "phones": [],
+        "birthday": ""
+    },
+    "Sergiy": {
+        "phones": [
+            "1314253645"
+        ],
+        "birthday": ""
+    }
+}
