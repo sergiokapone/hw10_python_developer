@@ -73,7 +73,7 @@ class Record:
         # інакше запустити конструктор
         self.name = name  # Name --- атрибут ля зберігання об'єкту Name
         self.phones = phones or []
-        self.birthday = birthday
+        self.birthday = birthday or Birthday('')
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
