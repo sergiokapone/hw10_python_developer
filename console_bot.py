@@ -54,7 +54,7 @@ class Record:
             return cls.records[name.value]
         return super().__new__(cls)
 
-    def __init__(self, name: Name, phones: list[str] = None):
+    def __init__(self, name: Name, phones: list[Phone] = None):
 
         # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
