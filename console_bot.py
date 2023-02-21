@@ -55,19 +55,25 @@ class Record:
         # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
             return
-        self.name = name  # Name
-        self.phones = []  # list[str]
+        self.name = name  # Name --- Атрибут ля зберігання об'єкту Name
+        self.phones = []  # list[str] --- Атрибут ля зберігання номерів в str
         self.phones.extend([phone.value for phone in phones])
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
     def add_phone(self, phone: Phone):
+        """Метод додає об'єкт телефон до запису."""
+
         self.phones.append(phone.value)
 
     def remove_phone(self, phone: Phone):
+        """Метод видаляє об'єкт телефон із запису."""
+
         self.phones.remove(phone.value)
 
     def change_phone(self, old_phone: Phone, new_phone: Phone) -> bool:
+        """Метод змінює об'єкт телефон в записі на новий."""
+
         if old_phone.value in self.phones:
             idx = self.phones.index(old_phone.value)
             self.phones[idx] = new_phone.value
@@ -79,11 +85,12 @@ class AddressBook(UserDict):
     """Клас містить логіку пошуку за записами до цього класу."""
 
     def add_record(self, record: Record):
-        """Додає запис до списку контактів."""
+        """Метод додає запис до списку контактів."""
 
         self.data[record.name.value] = record.phones
 
     def __str__(self):
+        """Метод який представляє дінні у вигляді Name: phone, phone, ..."""
         items = [
             f"{k}: {', '.join(str(i) for i in v)}" for k, v in self.items()
         ]
@@ -128,6 +135,7 @@ def show_all(*args):
 
 @input_error
 def add_contact(*args):
+    """Функція-handler додає телефон до контакту."""
 
     if not args[0]:
         raise KeyError
@@ -146,6 +154,7 @@ def add_contact(*args):
 
 @input_error
 def get_phones(*args):
+    """Функція-handler показує телефонні номери відповідного контакту."""
 
     if not args[0]:
         raise KeyError
@@ -162,6 +171,7 @@ def get_phones(*args):
 
 @input_error
 def remove_contact(*args):
+    """Функція-handler видаляє запис з книги."""
 
     if not args[0]:
         raise KeyError
@@ -175,6 +185,7 @@ def remove_contact(*args):
 
 @input_error
 def change_contact(*args):
+    """Функція-handler змінює телефон контакту."""
 
     if not args[0]:
         raise KeyError
@@ -207,6 +218,8 @@ def change_contact(*args):
 
 
 def get_handler(*args):
+    """Функція викликає відповідний handler."""
+
     COMMANDS = {
         "hello": hello,
         "add": add_contact,
