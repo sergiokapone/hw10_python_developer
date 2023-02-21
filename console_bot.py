@@ -130,6 +130,8 @@ def undefined(*args):
 
 
 def show_all(*args):
+    """Функція-handler показує книгу контактів."""
+
     return contacts
 
 
