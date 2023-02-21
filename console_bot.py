@@ -22,8 +22,11 @@ class Field:
     def __init__(self, value: str):
         self.value = value
 
-    # def __repr__(self):
-    #     return f"{self.value}"
+    def __repr__(self):
+        return f"{self.value}"
+
+    def __eq__(self, other):
+        return self.value == other.value
 
 
 class Name(Field):
@@ -51,20 +54,21 @@ class Record:
             return cls.records[name.value]
         return super().__new__(cls)
 
-    def __init__(self, name: Name, *phones: Phone):
+    def __init__(self, name: Name):
+
         # якщо об'єк було створено, то припинити роботу конструктора
         if name.value in self.records:
             return
-        self.name = name  # Name --- Атрибут ля зберігання об'єкту Name
-        self.phones = []  # list[str] --- Атрибут ля зберігання номерів в str
-        self.phones.extend([phone.value for phone in phones])
+        # інакше запустити конструктор
+        self.name = name  # Name --- атрибут ля зберігання об'єкту Name
+        self.phones = []
         # Додаємо в словник об'єктів новий об'єкт
         self.records[name.value] = self
 
     def add_phone(self, phone: Phone):
         """Метод додає об'єкт телефон до запису."""
 
-        self.phones.append(phone.value)
+        self.phones.append(phone)
 
     def remove_phone(self, phone: Phone):
         """Метод видаляє об'єкт телефон із запису."""
@@ -74,11 +78,15 @@ class Record:
     def change_phone(self, old_phone: Phone, new_phone: Phone) -> bool:
         """Метод змінює об'єкт телефон в записі на новий."""
 
-        if old_phone.value in self.phones:
-            idx = self.phones.index(old_phone.value)
-            self.phones[idx] = new_phone.value
+        phones_list_str = (phone.value for phone in self.phones)
+        if old_phone.value in phones_list_str:
+            idx = phones_list_str.index(old_phone.value)
+            self.phones[idx] = new_phone
             return True
         return False
+
+    def __str__(self):
+        return ", ".join([phone.value for phone in self.phones])
 
 
 class AddressBook(UserDict):
@@ -87,16 +95,19 @@ class AddressBook(UserDict):
     def add_record(self, record: Record):
         """Метод додає запис до списку контактів."""
 
-        self.data[record.name.value] = record.phones
+        self.data[record.name.value] = record
 
     def __str__(self):
-        """Метод який представляє дінні у вигляді Name: phone, phone, ..."""
+        """метод який представляє дінні у вигляді name: phone, phone, ..."""
+
         items = [
-            f"{k}: {', '.join(str(i) for i in v)}" for k, v in self.items()
+            f"{k}: {', '.join(str(i) for i in v.phones)}"
+            for k, v in self.items()
         ]
+
         if items:
             return "\n".join(items)
-        return "Empty"
+        return "Book is empty"
 
 
 # ================================= Decorator ================================#
@@ -205,11 +216,12 @@ def change_contact(*args):
     if name.value not in contacts:
         return f"Contact {name.value} not found"
 
-    contact_list = contacts[name.value]
+    contact_list = contacts[name.value].phones
     for number in contact_list:
-        if number == old_phone.value:
+        print(number == old_phone)
+        if number == old_phone:
             idx = contact_list.index(number)
-            contact_list[idx] = new_phone.value
+            contact_list[idx] = new_phone
             break
         return f"Phone {old_phone.value} not found for {name.value}"
 
